@@ -40,7 +40,7 @@ function popup(c) {
     (c.web ? ` · <a href="${esc(c.web)}" target="_blank" rel="noopener">Web</a>` : "");
 }
 
-function update() {
+function update(fit = true) {
   const q = query.trim().toLowerCase();
   // vybráno více značek = podnik musí mít alespoň jednu z nich
   const shown = cafes.filter(c =>
@@ -63,8 +63,36 @@ function update() {
     li.onclick = () => { map.setView([c.lat, c.lng], 16); m.openPopup(); };
     list.append(li);
   });
-  if (shown.length) map.fitBounds(L.latLngBounds(shown.map(c => [c.lat, c.lng])).pad(0.2), { maxZoom: 16 });
+  if (fit && shown.length) map.fitBounds(L.latLngBounds(shown.map(c => [c.lat, c.lng])).pad(0.2), { maxZoom: 16 });
 }
 
 document.getElementById("search").addEventListener("input", e => { query = e.target.value; update(); });
 update();
+
+// Upřesnění poloh podle adresy (OpenStreetMap Nominatim), výsledky se ukládají v prohlížeči.
+(async function refine() {
+  let cache = {};
+  try { cache = JSON.parse(localStorage.getItem("ecafe-geo-v1") || "{}"); } catch (e) {}
+  const todo = [];
+  cafes.forEach(c => {
+    const hit = cache[c.id + "|" + c.address];
+    if (hit) { c.lat = hit[0]; c.lng = hit[1]; c.approx = false; }
+    else if (c.approx) todo.push(c);
+  });
+  if (todo.length !== cafes.length) update(false);
+  for (const c of todo) {
+    try {
+      const q = c.address.replace(/\(.*?\)/g, "").replace(/\s*\/\s*[A-Za-zÁ-ž ]+,/, ",");
+      const url = "https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=cz" +
+        "&viewbox=16.45,49.28,16.75,49.12&bounded=1&q=" + encodeURIComponent(q.includes("Brno") ? q : q + ", Brno");
+      const r = await (await fetch(url, { headers: { "Accept-Language": "cs" } })).json();
+      if (r[0]) {
+        c.lat = +r[0].lat; c.lng = +r[0].lon; c.approx = false;
+        cache[c.id + "|" + c.address] = [c.lat, c.lng];
+        try { localStorage.setItem("ecafe-geo-v1", JSON.stringify(cache)); } catch (e) {}
+        update(false);
+      }
+    } catch (e) { break; }
+    await new Promise(res => setTimeout(res, 1100));
+  }
+})();
