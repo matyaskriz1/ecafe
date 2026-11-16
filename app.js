@@ -34,7 +34,7 @@ function renderFilters() {
 
 function popup(c) {
   const nav = `https://www.google.com/maps/dir/?api=1&destination=${c.lat},${c.lng}`;
-  return `<b>${esc(c.name)}</b><br>${esc(c.type)} · ${esc(c.address)}<br>` +
+  return `<b>${esc(c.name)}</b><br>${esc(c.type || "Podnik")} · ${esc(c.address)}<br>` +
     `Káva: ${c.brands.length ? c.brands.map(esc).join(", ") : "zatím neznámá"}<br>${c.hours ? esc(c.hours) + "<br>" : ""}` +
     `<a href="${nav}" target="_blank" rel="noopener">Navigovat</a>` +
     (c.web ? ` · <a href="${esc(c.web)}" target="_blank" rel="noopener">Web</a>` : "");
@@ -58,7 +58,7 @@ function update() {
     const m = L.marker([c.lat, c.lng], {icon: L.divIcon({className:"", html:"<div class=\"pin\"></div>", iconSize:[20,20], iconAnchor:[10,20], popupAnchor:[0,-18]})}).bindPopup(popup(c)).addTo(layer);
     markers.set(c.id, m);
     const li = document.createElement("li");
-    li.innerHTML = `<h3>${esc(c.name)}</h3><div class="meta">${esc(c.type)} · ${esc(c.address)}</div>` +
+    li.innerHTML = `<h3>${esc(c.name)}</h3><div class="meta">${esc(c.type || "Podnik")} · ${esc(c.address)}</div>` +
       (c.brands.length ? c.brands.map(b => `<span class="tag">${esc(b)}</span>`).join("") : `<span class="tag unk">značka zatím neznámá</span>`);
     li.onclick = () => { map.setView([c.lat, c.lng], 16); m.openPopup(); };
     list.append(li);
