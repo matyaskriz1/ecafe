@@ -3,23 +3,72 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Brněnský kávový průvodce</title>
+<title>eCafé – kávový průvodce Brnem</title>
+<meta name="description" content="eCafé: interaktivní mapa brněnských kaváren a podniků podle značky kávy.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header>
-  <h1>☕ Kávový průvodce Brno</h1>
-  <input id="search" type="search" placeholder="Hledat podnik…" aria-label="Hledat">
+<nav class="nav">
+  <a class="logo" href="#top"><span class="logo-mark">e</span>Café</a>
+  <div class="nav-links">
+    <a href="#mapa">Mapa</a>
+    <a href="#jak">Jak to funguje</a>
+    <a href="#pridat">Přidat podnik</a>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="hero-inner">
+    <p class="eyebrow">Brno</p>
+    <h1>Najdi kavárnu podle kávy, kterou ti naleje.</h1>
+    <p class="lead">Mapa brněnských kaváren a podniků s přehledem značek kávy. Vyber třeba Illy a uvidíš, kde ji dostaneš.</p>
+    <a class="btn" href="#mapa">Otevřít mapu</a>
+    <dl class="stats">
+      <div><dt>Podniků</dt><dd id="stat-cafes">0</dd></div>
+      <div><dt>Značek kávy</dt><dd id="stat-brands">0</dd></div>
+    </dl>
+  </div>
 </header>
-<section id="filters" aria-label="Filtr značek kávy"></section>
-<main>
-  <aside>
-    <div id="count"></div>
-    <ul id="list"></ul>
-  </aside>
-  <div id="map"></div>
-</main>
+
+<section class="explore" id="mapa" aria-label="Mapa kaváren">
+  <div class="toolbar">
+    <h2>Mapa a seznam</h2>
+    <input id="search" type="search" placeholder="Hledat podle názvu nebo adresy…" aria-label="Hledat podnik">
+  </div>
+  <div id="filters" class="filters" aria-label="Filtr značek kávy"></div>
+  <div class="split">
+    <aside class="panel">
+      <div id="count" class="count"></div>
+      <ul id="list"></ul>
+    </aside>
+    <div id="map"></div>
+  </div>
+</section>
+
+<section class="about" id="jak">
+  <h2>Jak to funguje</h2>
+  <div class="steps">
+    <article><h3>Vyber značku</h3><p>Klikni na jednu nebo víc značek kávy. Zobrazí se podniky, které mají aspoň jednu z nich.</p></article>
+    <article><h3>Prohlédni mapu i seznam</h3><p>Seznam a mapa se filtrují společně. Klik na podnik v seznamu ho ukáže na mapě.</p></article>
+    <article><h3>Vyraz tam</h3><p>V detailu najdeš odkaz na navigaci přímo k podniku.</p></article>
+  </div>
+</section>
+
+<section class="contribute" id="pridat">
+  <h2>Chybí tu tvůj podnik?</h2>
+  <p>eCafé se teprve plní. U některých podniků ještě neznáme značku kávy. Víš, jakou kávu tam mají, nebo chceš přidat další místo? Dej nám vědět.</p>
+  <a class="btn btn-ghost" href="https://github.com/matyaskriz1/ecafe/issues" target="_blank" rel="noopener">Napsat návrh</a>
+</section>
+
+<footer>
+  <span>eCafé · Brno</span>
+  <span>Mapové podklady © přispěvatelé OpenStreetMap</span>
+</footer>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="data/cafes.js"></script>
 <script src="app.js"></script>

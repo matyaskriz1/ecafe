@@ -1,5 +1,7 @@
 const cafes = window.CAFES;
 const brands = [...new Set(cafes.flatMap(c => c.brands))].sort();
+document.getElementById("stat-cafes").textContent = cafes.length;
+document.getElementById("stat-brands").textContent = brands.length;
 const selected = new Set();
 let query = "";
 
@@ -17,7 +19,7 @@ function renderFilters() {
   box.innerHTML = "";
   const all = document.createElement("button");
   all.className = "chip" + (selected.size ? "" : " on");
-  all.textContent = "Všechny značky";
+  all.textContent = "Všechny podniky";
   all.onclick = () => { selected.clear(); update(); };
   box.append(all);
   brands.forEach(b => {
@@ -33,7 +35,7 @@ function renderFilters() {
 function popup(c) {
   const nav = `https://www.google.com/maps/dir/?api=1&destination=${c.lat},${c.lng}`;
   return `<b>${esc(c.name)}</b><br>${esc(c.type)} · ${esc(c.address)}<br>` +
-    `Káva: ${c.brands.map(esc).join(", ")}<br>${esc(c.hours)}<br>` +
+    `Káva: ${c.brands.length ? c.brands.map(esc).join(", ") : "zatím neznámá"}<br>${c.hours ? esc(c.hours) + "<br>" : ""}` +
     `<a href="${nav}" target="_blank" rel="noopener">Navigovat</a>` +
     (c.web ? ` · <a href="${esc(c.web)}" target="_blank" rel="noopener">Web</a>` : "");
 }
@@ -53,12 +55,11 @@ function update() {
   document.getElementById("count").textContent = `Nalezeno: ${shown.length}`;
 
   shown.forEach(c => {
-    const m = L.marker([c.lat, c.lng]).bindPopup(popup(c)).addTo(layer);
+    const m = L.marker([c.lat, c.lng], {icon: L.divIcon({className:"", html:"<div class=\"pin\"></div>", iconSize:[20,20], iconAnchor:[10,20], popupAnchor:[0,-18]})}).bindPopup(popup(c)).addTo(layer);
     markers.set(c.id, m);
     const li = document.createElement("li");
     li.innerHTML = `<h3>${esc(c.name)}</h3><div class="meta">${esc(c.type)} · ${esc(c.address)}</div>` +
-      c.brands.map(b => `<span class="tag">${esc(b)}</span>`).join("") +
-      (c.verified ? "" : `<div class="unv">neověřená data</div>`);
+      (c.brands.length ? c.brands.map(b => `<span class="tag">${esc(b)}</span>`).join("") : `<span class="tag unk">značka zatím neznámá</span>`);
     li.onclick = () => { map.setView([c.lat, c.lng], 16); m.openPopup(); };
     list.append(li);
   });
