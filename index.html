@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brněnský kávový průvodce</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>☕ Kávový průvodce Brno</h1>
+  <input id="search" type="search" placeholder="Hledat podnik…" aria-label="Hledat">
+</header>
+<section id="filters" aria-label="Filtr značek kávy"></section>
+<main>
+  <aside>
+    <div id="count"></div>
+    <ul id="list"></ul>
+  </aside>
+  <div id="map"></div>
+</main>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="data/cafes.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
